@@ -1,3 +1,5 @@
+from nlp import NLP
+
 import logging
 
 from neo4j import GraphDatabase
@@ -71,12 +73,21 @@ class DealNeo4j:
 
 if __name__ == "__main__":
     # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
+    sentence = 'I go to aist in Tokyo everyday.Tokyo is the capital city of Japan.'
+    # nlp = NLP(sentence)
+    # print("tokens: ", nlp.get_tokenize())
+    # print("pos_tag: ", nlp.get_pos_tag())
+    # print("ner: ", nlp.get_ner())
+    # # print("parse: ", nlp.get_parse())
+    # print("dependency_parse: ", nlp.get_dependency_parse())
+    # print("get_annotate: ", nlp.get_annotate())
+
     scheme = "bolt"  # connecting to Aura. use the "neo4j+s" URI scheme
     host_name = "localhost"
     port = 7687
     url = "{scheme}://{host_name}:{port}".format(
         scheme=scheme, host_name=host_name, port=port)
-    user = "corenlp"
+    user = "neo4j"
     password = "password"
     app = DealNeo4j(url, user, password)
     app.create_friendship("Alice", "David")

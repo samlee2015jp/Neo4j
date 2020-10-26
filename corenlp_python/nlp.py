@@ -3,8 +3,7 @@ from stanfordcorenlp import StanfordCoreNLP
 
 class NLP:
 
-    def __init__(self, url, sentence):
-        self.url = url
+    def __init__(self, sentence):
         self.nlp = StanfordCoreNLP(
             r'D:\samli_202010\CoreNLP\CoreNLP\stanford-corenlp-4.1.0')
         self.sentence = sentence
@@ -22,7 +21,7 @@ class NLP:
 
     def get_ner(self):
         # Named Entities:
-        return self.nlp.ner_tag(self.sentence)
+        return self.nlp.ner(self.sentence)
 
     def get_parse(self):
         # Constituency Parsing
@@ -31,3 +30,7 @@ class NLP:
     def get_dependency_parse(self):
         # ependency Parsing
         return self.nlp.dependency_parse(self.sentence)
+
+    def get_annotate(self):
+        # ependency Parsing
+        return self.nlp.annotate(self.sentence)
