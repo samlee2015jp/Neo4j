@@ -76,7 +76,7 @@ if __name__ == "__main__":
     port = 7687
     url = "{scheme}://{host_name}:{port}".format(
         scheme=scheme, host_name=host_name, port=port)
-    user = "neo4j"
+    user = "corenlp"
     password = "password"
     app = DealNeo4j(url, user, password)
     app.create_friendship("Alice", "David")
