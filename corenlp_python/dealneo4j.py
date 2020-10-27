@@ -81,25 +81,31 @@ if __name__ == "__main__":
         scheme=scheme, host_name=host_name, port=port)
     user = "neo4j"
     password = "password"
-    app = DealNeo4j(url, user, password)
+    myneo4j = DealNeo4j(url, user, password)
 
     # the sentence
-    sentence = 'I go to aist in Tokyo everyday. Tokyo is the capital city of Japan.'
+    sentence = 'I go to aist in Tokyo everyday.'
     nlp = NLP(sentence)
     print("ner: ", nlp.get_ner())
     print("dependency_parse: ", nlp.get_dependency_parse())
     ner = nlp.get_ner()
     dependencies = nlp.get_dependency_parse()
-    # for dependency in dependencies:
+    for dependency in dependencies:
+        # entity
+        entity1 = ''
+        entity2 = ''
+        relation = dependency[0]
+        r1 = dependency[1]
+        if r1 != 0:
+            entity1 = ner[r1-1][0]
 
-    # print(dependency[0] + '-' + str(dependency[1][0]) +
-    #       '-' + str(dependency[2][0]) + '-' + entity1 + '-' + entity2)
-    # print(entity2)
-    # print(dependency[0])
-    # print(dependency[1])
-    # app.create_relationship(entity1, entity2, dependency[0])
+        r2 = dependency[2]
+        if r2 != 0:
+            entity2 = ner[r2-1][0]
+        print(entity1 + '-' + entity2 + '-' + relation)
 
-    # create relationship
-    # app.create_relationship("Alice", "David", "relation")
+        # create relationship
+        myneo4j.create_relationship(entity1, entity2, relation)
+
     # app.find_person("Alice")
-    # app.close()
+    myneo4j.close()
