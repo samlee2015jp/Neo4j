@@ -16,18 +16,18 @@ class DealNeo4j:
         # Don't forget to close the driver connection when you are finished with it
         self.driver.close()
 
-    def create_friendship(self, person1_name, person2_name):
+    def create_relationship(self, person1_name, person2_name, relation_ship):
         with self.driver.session() as session:
             # Write transactions allow the driver to handle retries and transient errors
             result = session.write_transaction(
-                self._create_and_return_friendship, person1_name, person2_name)
+                self._create_and_return_relationship, person1_name, person2_name, relation_ship)
             for record in result:
                 print("Created friendship between: {p1}, {p2}".format(
                     p1=record['p1'], p2=record['p2']
                 ))
 
     @staticmethod
-    def _create_and_return_friendship(tx, person1_name, person2_name):
+    def _create_and_return_relationship(tx, person1_name, person2_name, relation_ship):
 
         # To learn more about the Cypher syntax.
         # see http://neo4j.com/docs/cypher-manual/current/
@@ -36,13 +36,13 @@ class DealNeo4j:
         # see https://neo4j.com/docs/cypher-refcard/current/
 
         query = (
-            "CREATE (p1:Person { name: $person1_name }) "
-            "CREATE (p2:Person { name: $person2_name }) "
-            "CREATE (p1)-[:KNOWS]->(p2) "
+            "CREATE (p1:Entity { name: $person1_name }) "
+            "CREATE (p2:Entity { name: $person2_name }) "
+            "CREATE (p1)-[r:" + relation_ship + "]->(p2) "
             "RETURN p1, p2"
         )
         result = tx.run(query, person1_name=person1_name,
-                        person2_name=person2_name)
+                        person2_name=person2_name, relation_ship=relation_ship)
         try:
             return [{"p1": record["p1"]["name"],
                      "p2": record["p2"]["name"]}
@@ -63,7 +63,7 @@ class DealNeo4j:
     @staticmethod
     def _find_and_return_person(tx, person_name):
         query = (
-            "MATCH (p:Person) "
+            "MATCH (p:Entity) "
             "WHERE p.name = $person_name "
             "RETURN p.name AS name"
         )
@@ -73,14 +73,6 @@ class DealNeo4j:
 
 if __name__ == "__main__":
     # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
-    sentence = 'I go to aist in Tokyo everyday.Tokyo is the capital city of Japan.'
-    # nlp = NLP(sentence)
-    # print("tokens: ", nlp.get_tokenize())
-    # print("pos_tag: ", nlp.get_pos_tag())
-    # print("ner: ", nlp.get_ner())
-    # # print("parse: ", nlp.get_parse())
-    # print("dependency_parse: ", nlp.get_dependency_parse())
-    # print("get_annotate: ", nlp.get_annotate())
 
     scheme = "bolt"  # connecting to Aura. use the "neo4j+s" URI scheme
     host_name = "localhost"
@@ -90,6 +82,24 @@ if __name__ == "__main__":
     user = "neo4j"
     password = "password"
     app = DealNeo4j(url, user, password)
-    app.create_friendship("Alice", "David")
-    app.find_person("Alice")
-    app.close()
+
+    # the sentence
+    sentence = 'I go to aist in Tokyo everyday. Tokyo is the capital city of Japan.'
+    nlp = NLP(sentence)
+    print("ner: ", nlp.get_ner())
+    print("dependency_parse: ", nlp.get_dependency_parse())
+    ner = nlp.get_ner()
+    dependencies = nlp.get_dependency_parse()
+    # for dependency in dependencies:
+
+    # print(dependency[0] + '-' + str(dependency[1][0]) +
+    #       '-' + str(dependency[2][0]) + '-' + entity1 + '-' + entity2)
+    # print(entity2)
+    # print(dependency[0])
+    # print(dependency[1])
+    # app.create_relationship(entity1, entity2, dependency[0])
+
+    # create relationship
+    # app.create_relationship("Alice", "David", "relation")
+    # app.find_person("Alice")
+    # app.close()
