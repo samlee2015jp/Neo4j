@@ -105,7 +105,8 @@ if __name__ == "__main__":
         print(entity1 + '-' + entity2 + '-' + relation)
 
         # create relationship
-        myneo4j.create_relationship(entity1, entity2, relation)
+        myneo4j.create_relationship(
+            entity1, entity2, relation.replace(':', ''))
 
     # app.find_person("Alice")
     myneo4j.close()
