@@ -94,19 +94,15 @@ if __name__ == "__main__":
         # entity
         entity1 = ''
         entity2 = ''
-        relation = dependency[0]
-        r1 = dependency[1]
-        if r1 != 0:
-            entity1 = ner[r1-1][0]
+        if dependency[1] != 0:
+            entity1 = ner[dependency[1]-1][0]
 
-        r2 = dependency[2]
-        if r2 != 0:
-            entity2 = ner[r2-1][0]
-        print(entity1 + '-' + entity2 + '-' + relation)
+        if dependency[2] != 0:
+            entity2 = ner[dependency[2]-1][0]
 
         # create relationship
         myneo4j.create_relationship(
-            entity1, entity2, relation.replace(':', ''))
+            entity1, entity2, dependency[0].replace(':', ''))
 
     # app.find_person("Alice")
     myneo4j.close()
