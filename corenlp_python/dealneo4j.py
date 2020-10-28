@@ -16,50 +16,58 @@ class DealNeo4j:
         # Don't forget to close the driver connection when you are finished with it
         self.driver.close()
 
-    def create_relationship(self, entity1_name, entity2_name, relation):
+    def create_relation(self, property1_name, property2_name, relation):
         with self.driver.session() as session:
             # entity1
-            entityResult1 = self._find_entity(self, entity1_name)
-            print("entityResult1: ", entityResult1)
+            propertyResult1 = None
+
+            if property1_name != '':
+                propertyResult1 = self._find_entity_property(
+                    self, property1_name)
+                print("entityResult1: ", propertyResult1)
 
             # entity2
-            entityResult2 = self._find_entity(self, entity2_name)
-            print("entityResult2: ", entityResult2)
+            propertyResult2 = None
+
+            if property2_name != '':
+                propertyResult2 = self._find_entity_property(
+                    self, property2_name)
+                print("entityResult2: ", propertyResult2)
 
             # relation
-            relationResult = self._find_relation(
-                self, entity1_name, entity2_name, relation)
-            print("relationResult: ", relationResult)
+            if relation == 'ROOT':
+                relation = None
+            relationResult = None
 
             # Write transactions allow the driver to handle retries and transient errors
-            if (relationResult == None) and (entityResult1 == None) and (entityResult2 != None):
+            if (relationResult == None) and (propertyResult1 == None) and (propertyResult2 != None):
                 result = session.write_transaction(
-                    self._create_and_return_relation_entity, entity1_name, entity2_name, relation)
+                    self._create_and_return_relation_entity, property1_name, property2_name, relation)
                 for record in result:
                     print("Created relation between: {p1}, {p2}, {r}".format(
                         p1=record['p1'], p2=record['p2'], r=record['r']
                     ))
 
-            elif (relationResult == None) and (entityResult1 != None) and (entityResult2 == None):
+            elif (relationResult == None) and (propertyResult1 != None) and (propertyResult2 == None):
                 result = session.write_transaction(
-                    self._create_and_return_relation_entity, entity2_name, entity1_name, relation)
+                    self._create_and_return_relation_entity, property2_name, property1_name, relation)
                 for record in result:
                     print("Created relation between: {p1}, {p2}, {r}".format(
                         p1=record['p1'], p2=record['p2'], r=record['r']
                     ))
 
-            elif (relationResult == None) and (entityResult1 != None) and (entityResult2 != None):
+            elif (relationResult == None) and (propertyResult1 != None) and (propertyResult2 != None):
                 result = session.write_transaction(
-                    self._create_and_return_relation, entity1_name, entity2_name, relation)
+                    self._create_and_return_relation, property1_name, property2_name, relation)
                 for record in result:
                     print("Created relation between: {p1}, {p2}, {r}".format(
                         p1=record['p1'], p2=record['p2'], r=record['r']
                     ))
 
                 # when it doesnot exist entity1,entity2 and relation
-            elif (entityResult1 == None) and (entityResult2 == None) and (relationResult == None):
+            elif (propertyResult1 == None) and (propertyResult2 == None) and (relationResult == None):
                 result = session.write_transaction(
-                    self._create_and_return_relation_entities, entity1_name, entity2_name, relation)
+                    self._create_and_return_relation_entities, property1_name, property2_name, relation)
                 for record in result:
                     print("Created relation between: {p1}, {p2}, {r}".format(
                         p1=record['p1'], p2=record['p2'], r=record['r']
@@ -152,22 +160,22 @@ class DealNeo4j:
             raise
 
     @staticmethod
-    def _find_entity(self, person_name):
+    def _find_entity_property(self, property_name):
         with self.driver.session() as session:
             result = session.read_transaction(
-                self._find_and_return_entity, person_name)
+                self._find_and_return_entity_property, property_name)
             for record in result:
                 print("Found entity: {record}".format(record=record))
                 return record
 
     @staticmethod
-    def _find_and_return_entity(tx, entity_name):
+    def _find_and_return_entity_property(tx, property_name):
         query = (
             "MATCH (p:Entity) "
-            "WHERE p.name = $entity_name "
+            "WHERE p.name = $property_name "
             "RETURN p.name AS name"
         )
-        result = tx.run(query, entity_name=entity_name)
+        result = tx.run(query, property_name=property_name)
         return [record["name"] for record in result]
 
     @staticmethod
@@ -212,16 +220,16 @@ if __name__ == "__main__":
     dependencies = nlp.get_dependency_parse()
     for dependency in dependencies:
         # entity
-        entity1 = ''
-        entity2 = ''
+        property1 = ''
+        property2 = ''
         if dependency[1] != 0:
-            entity1 = ner[dependency[1]-1][0]
+            property1 = ner[dependency[1]-1][0]
 
         if dependency[2] != 0:
-            entity2 = ner[dependency[2]-1][0]
+            property2 = ner[dependency[2]-1][0]
 
-        # create relationship
-        myneo4j.create_relationship(
-            entity1, entity2, dependency[0].replace(':', ''))
+        # create relation
+        myneo4j.create_relation(
+            property1, property2, dependency[0].replace(':', ''))
 
     myneo4j.close()
