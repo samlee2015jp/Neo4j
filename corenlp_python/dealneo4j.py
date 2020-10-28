@@ -188,10 +188,10 @@ if __name__ == "__main__":
     myneo4j = DealNeo4j(url, user, password)
 
     # the sentence
-    sentence = 'I go to aist in Tokyo everyday.'
+    sentence = 'I go to aist in Tokyo everyday. I go to school.'
     nlp = NLP(sentence)
-    # print("ner: ", nlp.get_ner())
-    # print("dependency_parse: ", nlp.get_dependency_parse())
+    print("ner: ", nlp.get_ner())
+    print("dependency_parse: ", nlp.get_dependency_parse())
     ner = nlp.get_ner()
     dependencies = nlp.get_dependency_parse()
     for dependency in dependencies:
@@ -205,7 +205,7 @@ if __name__ == "__main__":
             property2 = ner[dependency[2]-1][0]
 
         # create relation
-        myneo4j.create_relation(
-            property1, property2, dependency[0].replace(':', ''))
+        # myneo4j.create_relation(
+        #     property1, property2, dependency[0].replace(':', ''))
 
     myneo4j.close()
