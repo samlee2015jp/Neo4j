@@ -187,7 +187,7 @@ class DealNeo4j:
             "RETURN r AS relation"
         )
         result = tx.run(query, entity1_name=entity1_name,
-                        entity2_name=person2_name, relation=relation)
+                        entity2_name=entity2_name, relation=relation)
         return [record["relation"] for record in result]
 
 
