@@ -16,25 +16,25 @@ class DealNeo4j:
         # Don't forget to close the driver connection when you are finished with it
         self.driver.close()
 
-    def create_relationship(self, person1_name, person2_name, relation):
+    def create_relationship(self, entity1_name, entity2_name, relation):
         with self.driver.session() as session:
             # entity1
-            entityResult1 = self._find_entity(self, person1_name)
+            entityResult1 = self._find_entity(self, entity1_name)
             print("entityResult1: ", entityResult1)
 
             # entity2
-            entityResult2 = self._find_entity(self, person2_name)
+            entityResult2 = self._find_entity(self, entity2_name)
             print("entityResult2: ", entityResult2)
 
             # relation
             relationResult = self._find_relation(
-                self, person1_name, person2_name, relation)
+                self, entity1_name, entity2_name, relation)
             print("relationResult: ", relationResult)
 
             # Write transactions allow the driver to handle retries and transient errors
             if (relationResult == None) and (entityResult1 == None) and (entityResult2 != None):
                 result = session.write_transaction(
-                    self._create_and_return_relation_entity, person1_name, person2_name, relation)
+                    self._create_and_return_relation_entity, entity1_name, entity2_name, relation)
                 for record in result:
                     print("Created relation between: {p1}, {p2}, {r}".format(
                         p1=record['p1'], p2=record['p2'], r=record['r']
@@ -42,7 +42,7 @@ class DealNeo4j:
 
             elif (relationResult == None) and (entityResult1 != None) and (entityResult2 == None):
                 result = session.write_transaction(
-                    self._create_and_return_relation_entity, person2_name, person1_name, relation)
+                    self._create_and_return_relation_entity, entity2_name, entity1_name, relation)
                 for record in result:
                     print("Created relation between: {p1}, {p2}, {r}".format(
                         p1=record['p1'], p2=record['p2'], r=record['r']
@@ -50,7 +50,7 @@ class DealNeo4j:
 
             elif (relationResult == None) and (entityResult1 != None) and (entityResult2 != None):
                 result = session.write_transaction(
-                    self._create_and_return_relation, person1_name, person2_name, relation)
+                    self._create_and_return_relation, entity1_name, entity2_name, relation)
                 for record in result:
                     print("Created relation between: {p1}, {p2}, {r}".format(
                         p1=record['p1'], p2=record['p2'], r=record['r']
@@ -59,7 +59,7 @@ class DealNeo4j:
                 # when it doesnot exist entity1,entity2 and relation
             elif (entityResult1 == None) and (entityResult2 == None) and (relationResult == None):
                 result = session.write_transaction(
-                    self._create_and_return_relation_entities, person1_name, person2_name, relation)
+                    self._create_and_return_relation_entities, entity1_name, entity2_name, relation)
                 for record in result:
                     print("Created relation between: {p1}, {p2}, {r}".format(
                         p1=record['p1'], p2=record['p2'], r=record['r']
@@ -68,7 +68,7 @@ class DealNeo4j:
             # when it doesnot exist entity1
 
     @staticmethod
-    def _create_and_return_relation_entity(tx, person1_name, person2_name, relation):
+    def _create_and_return_relation_entity(tx, entity1_name, entity2_name, relation):
 
         # To learn more about the Cypher syntax.
         # see http://neo4j.com/docs/cypher-manual/current/
@@ -77,12 +77,12 @@ class DealNeo4j:
         # see https://neo4j.com/docs/cypher-refcard/current/
 
         query = (
-            "CREATE (p1:Entity { name: $person1_name }) "
+            "CREATE (p1:Entity { name: $entity1_name }) "
             "CREATE (p1)-[r:" + relation + "]->(p2) "
             "RETURN p1, p2, r"
         )
-        result = tx.run(query, person1_name=person1_name,
-                        person2_name=person2_name, relation=relation)
+        result = tx.run(query, entity1_name=entity1_name,
+                        entity2_name=entity2_name, relation=relation)
         try:
             return [{"p1": record["p1"]["name"],
                      "p2": record["p2"]["name"],
@@ -96,7 +96,7 @@ class DealNeo4j:
             raise
 
     @staticmethod
-    def _create_and_return_relation(tx, person1_name, person2_name, relation):
+    def _create_and_return_relation(tx, entity1_name, entity2_name, relation):
 
         # To learn more about the Cypher syntax.
         # see http://neo4j.com/docs/cypher-manual/current/
@@ -108,8 +108,8 @@ class DealNeo4j:
             "CREATE (p1)-[r:" + relation + "]->(p2) "
             "RETURN p1, p2, r"
         )
-        result = tx.run(query, person1_name=person1_name,
-                        person2_name=person2_name, relation=relation)
+        result = tx.run(query, entity1_name=entity1_name,
+                        entity2_name=entity2_name, relation=relation)
         try:
             return [{"p1": record["p1"]["name"],
                      "p2": record["p2"]["name"],
@@ -123,7 +123,7 @@ class DealNeo4j:
             raise
 
     @staticmethod
-    def _create_and_return_relation_entities(tx, person1_name, person2_name, relation):
+    def _create_and_return_relation_entities(tx, entity1_name, entity2_name, relation):
 
         # To learn more about the Cypher syntax.
         # see http://neo4j.com/docs/cypher-manual/current/
@@ -132,13 +132,13 @@ class DealNeo4j:
         # see https://neo4j.com/docs/cypher-refcard/current/
 
         query = (
-            "CREATE (p1:Entity { name: $person1_name }) "
-            "CREATE (p2:Entity { name: $person2_name }) "
+            "CREATE (p1:Entity { name: $entity1_name }) "
+            "CREATE (p2:Entity { name: $entity2_name }) "
             "CREATE (p1)-[r:" + relation + "]->(p2) "
             "RETURN p1, p2, r"
         )
-        result = tx.run(query, person1_name=person1_name,
-                        person2_name=person2_name, relation=relation)
+        result = tx.run(query, entity1_name=entity1_name,
+                        entity2_name=entity2_name, relation=relation)
         try:
             return [{"p1": record["p1"]["name"],
                      "p2": record["p2"]["name"],
@@ -161,33 +161,33 @@ class DealNeo4j:
                 return record
 
     @staticmethod
-    def _find_and_return_entity(tx, person_name):
+    def _find_and_return_entity(tx, entity_name):
         query = (
             "MATCH (p:Entity) "
-            "WHERE p.name = $person_name "
+            "WHERE p.name = $entity_name "
             "RETURN p.name AS name"
         )
-        result = tx.run(query, person_name=person_name)
+        result = tx.run(query, entity_name=entity_name)
         return [record["name"] for record in result]
 
     @staticmethod
-    def _find_relation(self, person1_name, person2_name, relation):
+    def _find_relation(self, entity1_name, entity2_name, relation):
         with self.driver.session() as session:
             result = session.read_transaction(
-                self._find_and_return_relation, person1_name=person1_name, person2_name=person2_name, relation=relation)
+                self._find_and_return_relation, entity1_name=entity1_name, entity2_name=entity2_name, relation=relation)
             for record in result:
                 print("Found relation: {record}".format(record=record))
                 return record
 
     @staticmethod
-    def _find_and_return_relation(tx, person1_name, person2_name, relation):
+    def _find_and_return_relation(tx, entity1_name, entity2_name, relation):
         query = (
             "MATCH (p:Entity)-[r:" + relation + "]-(s:Entity) "
-            "WHERE p.name = $person1_name and s.name = $person2_name "
+            "WHERE p.name = $entity1_name and s.name = $entity2_name "
             "RETURN r AS relation"
         )
-        result = tx.run(query, person1_name=person1_name,
-                        person2_name=person2_name, relation=relation)
+        result = tx.run(query, entity1_name=entity1_name,
+                        entity2_name=person2_name, relation=relation)
         return [record["relation"] for record in result]
 
 
@@ -216,15 +216,9 @@ if __name__ == "__main__":
         entity2 = ''
         if dependency[1] != 0:
             entity1 = ner[dependency[1]-1][0]
-            # find entity
-            # print("entity1: ", entity1)
-            # myneo4j.find_entity(entity1)
 
         if dependency[2] != 0:
             entity2 = ner[dependency[2]-1][0]
-            # find entity
-            # print("entity2: ", entity2)
-            # myneo4j.find_entity(entity2)
 
         # create relationship
         myneo4j.create_relationship(
