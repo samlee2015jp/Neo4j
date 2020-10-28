@@ -55,10 +55,51 @@ class DealNeo4j:
             if (propertyResult1 != None) and (propertyResult2 == None) and (relationResult != None):
                 createPropertyResult2 = session.write_transaction(
                     self._create_and_return_property, property2_name)
-                print('created property2: ' + createPropertyResult2)
+                print('created property2: ' + createPropertyResult2[0])
+
+            # creating property2 and relation
+            elif (propertyResult1 != None) and (propertyResult2 == None) and (relationResult == None):
+                createrRelationPropertyResult2 = session.write_transaction(
+                    self._create_and_return_relation_property, property1_name, property2_name, relation)
+                print('created property2 and relation: ' +
+                      createrRelationPropertyResult2[0])
+
+            # creating property1, property2 and relation
+            elif (propertyResult1 == None) and (propertyResult2 == None) and (relationResult == None):
+                createrRelationPropertyResult2 = session.write_transaction(
+                    self._create_and_return_relation_properties, property1_name, property2_name, relation)
+                print('created property1, property2 and relation: ' +
+                      createrRelationPropertyResult2[0])
+
+            # doing nothing
+            else:
+                print('Doing nothing.')
 
             # when it doesnot exist entity1
             print('The end of creating each property or relation.')
+
+    @staticmethod
+    def _create_and_return_relation_properties(tx, property1_name, property2_name, relation):
+        query = (
+            "CREATE (n: Entity{name: $property1_name})-[r:" + relation +
+            "] -> (m: Entity{name: $property2_name}) "
+            "RETURN type(r) AS relation"
+        )
+        result = tx.run(query, property1_name=property1_name,
+                        property2_name=property2_name, relation=relation)
+        return [record["relation"] for record in result]
+
+    @staticmethod
+    def _create_and_return_relation_property(tx, property1_name, property2_name, relation):
+        query = (
+            "MATCH (n: Entity{name: $property1_name}) "
+            "CREATE (n)-[r:" + relation +
+            "] -> (m: Entity{name: $property2_name}) "
+            "RETURN type(r) AS relation"
+        )
+        result = tx.run(query, property1_name=property1_name,
+                        property2_name=property2_name, relation=relation)
+        return [record["relation"] for record in result]
 
     @staticmethod
     def _create_and_return_property(tx, property_name):
