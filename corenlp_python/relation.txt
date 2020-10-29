@@ -1,3 +1,4 @@
-ner:  [('I', 'O'), ('go', 'O'), ('to', 'O'), ('aist', 'O'), ('in', 'O'), ('Tokyo', 'CITY'), ('everyday', 'O'), ('.', 'O'), ('I', 'O'), ('go', 'O'), ('to', 'O'), ('school', 'O'), ('.', 'O')]
-dependency_parse:  [('ROOT', 0, 2), ('nsubj', 2, 1), ('case', 4, 3), ('obl', 2, 4), ('case', 6, 5), ('obl', 2, 6), ('obl:tmod', 2, 7), ('punct', 2, 8), ('ROOT', 0, 2), ('nsubj', 2, 1), ('case', 4, 3), ('obl', 
-2, 4), ('punct', 2, 5)]
+ner:  [('I', 'O'), ('go', 'O'), ('to', 'O'), ('aist', 'O'), ('in', 'O'), ('Tokyo', 'CITY'), ('everyday', 'O'), ('.', 'O'), 
+('I', 'O'), ('go', 'O'), ('to', 'O'), ('school', 'O'), ('.', 'O')]
+dependency_parse:  [('ROOT', 0, 2), ('nsubj', 2, 1), ('case', 4, 3), ('obl', 2, 4), ('case', 6, 5), ('obl', 2, 6), ('obl:tmod', 2, 7), ('punct', 2, 8), 
+('ROOT', 0, 2), ('nsubj', 2, 1), ('case', 4, 3), ('obl', 2, 4), ('punct', 2, 5)]

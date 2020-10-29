@@ -66,17 +66,24 @@ class DealNeo4j:
 
             # creating property1, property2 and relation
             elif (propertyResult1 == None) and (propertyResult2 == None) and (relationResult == None):
-                createrRelationPropertyResult2 = session.write_transaction(
+                createrRelationPropertyResult12 = session.write_transaction(
                     self._create_and_return_relation_properties, property1_name, property2_name, relation)
                 print('created property1, property2 and relation: ' +
-                      createrRelationPropertyResult2[0])
+                      createrRelationPropertyResult12[0])
 
             # creating relation
             elif (propertyResult1 != None) and (propertyResult2 != None) and (relationResult == None):
-                createrRelationPropertyResult2 = session.write_transaction(
+                createrRelationResult = session.write_transaction(
                     self._create_and_return_relation, property1_name, property2_name, relation)
                 print('created relation: ' +
-                      createrRelationPropertyResult2[0])
+                      createrRelationResult[0])
+
+            # creating relation
+            elif (propertyResult1 != None) and (propertyResult2 != None) and (relationResult != None) and (propertyResult1 != '') and (propertyResult2 != '') and (relationResult != ''):
+                createrRelationPropertyResult = session.write_transaction(
+                    self._set_and_return_relation_property, property1_name, property2_name, relation)
+                print('set size property of relation: ' +
+                      str(createrRelationPropertyResult[0]))
 
             # doing nothing
             else:
@@ -84,6 +91,18 @@ class DealNeo4j:
 
             # when it doesnot exist entity1
             print('--------------------------------The end of creating each property or relation.--------------------------------')
+
+    @staticmethod
+    def _set_and_return_relation_property(tx, property1_name, property2_name, relation):
+        query = (
+            "MATCH(n: Entity{name: $property1_name})-[r: " +
+            relation + "] -> (m: Entity{name: $property2_name} )"
+            "SET r.size=CASE WHEN r.size IS NULL THEN 2 ELSE r.size + 1 END "
+            "RETURN r.size AS size"
+        )
+        result = tx.run(query, property1_name=property1_name,
+                        property2_name=property2_name, relation=relation)
+        return [record["size"] for record in result]
 
     @staticmethod
     def _create_and_return_relation(tx, property1_name, property2_name, relation):
@@ -188,7 +207,7 @@ if __name__ == "__main__":
     myneo4j = DealNeo4j(url, user, password)
 
     # the sentence
-    sentence = 'I go to aist in Tokyo everyday. I go to school.'
+    sentence = 'I go to aist in Tokyo everyday. I go to school every weekday.'
     nlp = NLP(sentence)
     print("ner: ", nlp.get_ner())
     print("dependency_parse: ", nlp.get_dependency_parse())
