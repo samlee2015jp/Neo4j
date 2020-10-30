@@ -237,9 +237,9 @@ if __name__ == "__main__":
 
             if z != 0:
                 property2 = ner[z-1][0]
-                print(property1)
+                print(property2)
 
-            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
+            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 0)----------------------------------------------")
             # create relation
             myneo4j.create_relation(property1, property2, x.replace(':', ''))
 
@@ -253,20 +253,20 @@ if __name__ == "__main__":
 
             if z != 0:
                 property2 = ner[z-1][0]
-                print(property1)
+                print(property2)
 
-            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
+            print("--------------------------------------------------------(x != 'ROOT') and (rootCount == 1)----------------------------------------------")
             # create relation
             myneo4j.create_relation(property1, property2, x.replace(':', ''))
 
         elif (x == 'ROOT') and (rootCount == 1):
             if y != 0:
-                property1 = ner[y-1][0]
+                property1 = ner[y-1+dependencyCount][0]
                 print(property1)
 
             if z != 0:
-                property2 = ner[z-1][0]
-                print(property1)
+                property2 = ner[z-1+dependencyCount][0]
+                print(property2)
 
             print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
             # create relation
@@ -277,23 +277,19 @@ if __name__ == "__main__":
 
         elif (x != 'ROOT') and (rootCount > 1):
             if y != 0:
-                property1 = ner[y-1][0]
+                property1 = ner[y-1+dependencyCount][0]
                 print(property1)
 
             if z != 0:
-                property2 = ner[z-1][0]
-                print(property1)
+                property2 = ner[z-1+dependencyCount][0]
+                print(property2)
 
-            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
+            print("--------------------------------------------------------(x != 'ROOT') and (rootCount > 1)----------------------------------------------")
             # create relation
             myneo4j.create_relation(property1, property2, x.replace(':', ''))
 
         else:
             print(dependencyCount)
-
-            # create relation
-            # myneo4j.create_relation(
-            #     property1, property2, x.replace(':', ''))
 
         # increase dependency count
         dependencyCount += 1
