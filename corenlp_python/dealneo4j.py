@@ -208,23 +208,95 @@ if __name__ == "__main__":
 
     # the sentence
     sentence = 'I go to aist in Tokyo everyday. I go to school every weekday.'
+    # sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
+    # sentence = 'I go to aist in Tokyo everyday.'
     nlp = NLP(sentence)
     print("ner: ", nlp.get_ner())
     print("dependency_parse: ", nlp.get_dependency_parse())
     ner = nlp.get_ner()
     dependencies = nlp.get_dependency_parse()
-    for dependency in dependencies:
-        # entity
+
+    # the count of dependency
+    dependencyCount = 1
+
+    # the count of root
+    rootCount = 0
+
+    # get the dependencies
+    for x, y, z in dependencies:
+        # properties
         property1 = ''
         property2 = ''
-        if dependency[1] != 0:
-            property1 = ner[dependency[1]-1][0]
+        print(x)
+        print(dependencyCount)
+        # the first sentence
+        if (x == 'ROOT') and (rootCount == 0):
+            if y != 0:
+                property1 = ner[y-1][0]
+                print(property1)
 
-        if dependency[2] != 0:
-            property2 = ner[dependency[2]-1][0]
+            if z != 0:
+                property2 = ner[z-1][0]
+                print(property1)
 
-        # create relation
-        # myneo4j.create_relation(
-        #     property1, property2, dependency[0].replace(':', ''))
+            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
+            # create relation
+            myneo4j.create_relation(property1, property2, x.replace(':', ''))
+
+            # increase the count of root
+            rootCount += 1
+
+        elif (x != 'ROOT') and (rootCount == 1):
+            if y != 0:
+                property1 = ner[y-1][0]
+                print(property1)
+
+            if z != 0:
+                property2 = ner[z-1][0]
+                print(property1)
+
+            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
+            # create relation
+            myneo4j.create_relation(property1, property2, x.replace(':', ''))
+
+        elif (x == 'ROOT') and (rootCount == 1):
+            if y != 0:
+                property1 = ner[y-1][0]
+                print(property1)
+
+            if z != 0:
+                property2 = ner[z-1][0]
+                print(property1)
+
+            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
+            # create relation
+            myneo4j.create_relation(property1, property2, x.replace(':', ''))
+
+            # increase the count of root
+            rootCount += 1
+
+        elif (x != 'ROOT') and (rootCount > 1):
+            if y != 0:
+                property1 = ner[y-1][0]
+                print(property1)
+
+            if z != 0:
+                property2 = ner[z-1][0]
+                print(property1)
+
+            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
+            # create relation
+            myneo4j.create_relation(property1, property2, x.replace(':', ''))
+
+        else:
+            print(dependencyCount)
+
+            # create relation
+            # myneo4j.create_relation(
+            #     property1, property2, x.replace(':', ''))
+
+        # increase dependency count
+        dependencyCount += 1
+        print("------------------------dependencyCount-----------------------------------" + str(dependencyCount))
 
     myneo4j.close()
