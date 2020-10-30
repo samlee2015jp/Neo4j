@@ -60,8 +60,15 @@ class DealNeo4j:
             # creating property2 and relation
             elif (propertyResult1 != None) and (propertyResult2 == None) and (relationResult == None):
                 createrRelationPropertyResult2 = session.write_transaction(
-                    self._create_and_return_relation_property, property1_name, property2_name, relation)
+                    self._create_and_return_relation_property2, property1_name, property2_name, relation)
                 print('created property2 and relation: ' +
+                      createrRelationPropertyResult2[0])
+
+            # creating property1 and relation
+            elif (propertyResult1 != None) and (propertyResult2 == None) and (relationResult == None):
+                createrRelationPropertyResult2 = session.write_transaction(
+                    self._create_and_return_relation_property, property1_name, property2_name, relation)
+                print('created property1 and relation: ' +
                       createrRelationPropertyResult2[0])
 
             # creating property1, property2 and relation
@@ -127,7 +134,19 @@ class DealNeo4j:
         return [record["relation"] for record in result]
 
     @staticmethod
-    def _create_and_return_relation_property(tx, property1_name, property2_name, relation):
+    def _create_and_return_relation_property1(tx, property1_name, property2_name, relation):
+        query = (
+            "MATCH (m: Entity{name: $property2_name}) "
+            "CREATE (n: Entity{name: $property1_name})-[r:" + relation +
+            "] -> (m) "
+            "RETURN type(r) AS relation"
+        )
+        result = tx.run(query, property1_name=property1_name,
+                        property2_name=property2_name, relation=relation)
+        return [record["relation"] for record in result]
+
+    @staticmethod
+    def _create_and_return_relation_property2(tx, property1_name, property2_name, relation):
         query = (
             "MATCH (n: Entity{name: $property1_name}) "
             "CREATE (n)-[r:" + relation +
@@ -217,10 +236,13 @@ if __name__ == "__main__":
     dependencies = nlp.get_dependency_parse()
 
     # the count of dependency
-    dependencyCount = 1
+    dependencyCount = 0
 
     # the count of root
     rootCount = 0
+
+    # the count of dependency root
+    dependencyRootCount = 0
 
     # get the dependencies
     for x, y, z in dependencies:
@@ -259,7 +281,7 @@ if __name__ == "__main__":
             # create relation
             myneo4j.create_relation(property1, property2, x.replace(':', ''))
 
-        elif (x == 'ROOT') and (rootCount == 1):
+        elif (x == 'ROOT') and (rootCount > 0):
             if y != 0:
                 property1 = ner[y-1+dependencyCount][0]
                 print(property1)
@@ -274,14 +296,16 @@ if __name__ == "__main__":
 
             # increase the count of root
             rootCount += 1
+            # decrease dependency count
+            dependencyRootCount = dependencyCount
 
         elif (x != 'ROOT') and (rootCount > 1):
             if y != 0:
-                property1 = ner[y-1+dependencyCount][0]
+                property1 = ner[y-1+dependencyRootCount][0]
                 print(property1)
 
             if z != 0:
-                property2 = ner[z-1+dependencyCount][0]
+                property2 = ner[z-1+dependencyRootCount][0]
                 print(property2)
 
             print("--------------------------------------------------------(x != 'ROOT') and (rootCount > 1)----------------------------------------------")
