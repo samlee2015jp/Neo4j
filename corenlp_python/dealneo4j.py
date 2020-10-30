@@ -65,11 +65,11 @@ class DealNeo4j:
                       createrRelationPropertyResult2[0])
 
             # creating property1 and relation
-            elif (propertyResult1 != None) and (propertyResult2 == None) and (relationResult == None):
-                createrRelationPropertyResult2 = session.write_transaction(
-                    self._create_and_return_relation_property, property1_name, property2_name, relation)
+            elif (propertyResult1 == None) and (propertyResult2 != None) and (relationResult == None):
+                createrRelationPropertyResult1 = session.write_transaction(
+                    self._create_and_return_relation_property1, property1_name, property2_name, relation)
                 print('created property1 and relation: ' +
-                      createrRelationPropertyResult2[0])
+                      createrRelationPropertyResult1[0])
 
             # creating property1, property2 and relation
             elif (propertyResult1 == None) and (propertyResult2 == None) and (relationResult == None):
