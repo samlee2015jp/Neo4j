@@ -226,11 +226,16 @@ if __name__ == "__main__":
     myneo4j = DealNeo4j(url, user, password)
 
     # the sentence
-    sentence = 'I go to aist in Tokyo everyday. I go to school every weekday.'
+    sentence = "Sam go to aist in Tokyo everyday."
     # sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
     # sentence = 'I go to aist in Tokyo everyday.'
     nlp = NLP(sentence)
     print("ner: ", nlp.get_ner())
+    # print("tokenize: ", nlp.get_tokenize())
+    # print("annotate: ", nlp.get_annotate())
+    # print("pos_tag: ", nlp.get_pos_tag())
+    # print("sentence: ", nlp.sentence)
+    # print("parse: ", nlp.get_parse())
     print("dependency_parse: ", nlp.get_dependency_parse())
     ner = nlp.get_ner()
     dependencies = nlp.get_dependency_parse()
@@ -261,7 +266,6 @@ if __name__ == "__main__":
                 property2 = ner[z-1][0]
                 print(property2)
 
-            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 0)----------------------------------------------")
             # create relation
             myneo4j.create_relation(property1, property2, x.replace(':', ''))
 
@@ -277,7 +281,6 @@ if __name__ == "__main__":
                 property2 = ner[z-1][0]
                 print(property2)
 
-            print("--------------------------------------------------------(x != 'ROOT') and (rootCount == 1)----------------------------------------------")
             # create relation
             myneo4j.create_relation(property1, property2, x.replace(':', ''))
 
@@ -290,7 +293,6 @@ if __name__ == "__main__":
                 property2 = ner[z-1+dependencyCount][0]
                 print(property2)
 
-            print("--------------------------------------------------------(x == 'ROOT') and (rootCount == 1)----------------------------------------------")
             # create relation
             myneo4j.create_relation(property1, property2, x.replace(':', ''))
 
@@ -308,7 +310,6 @@ if __name__ == "__main__":
                 property2 = ner[z-1+dependencyRootCount][0]
                 print(property2)
 
-            print("--------------------------------------------------------(x != 'ROOT') and (rootCount > 1)----------------------------------------------")
             # create relation
             myneo4j.create_relation(property1, property2, x.replace(':', ''))
 
@@ -317,6 +318,5 @@ if __name__ == "__main__":
 
         # increase dependency count
         dependencyCount += 1
-        print("------------------------dependencyCount-----------------------------------" + str(dependencyCount))
 
     myneo4j.close()
