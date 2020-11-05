@@ -343,11 +343,11 @@ if __name__ == "__main__":
 
         elif (x == 'ROOT') and (rootCount > 0):
             if y != 0:
-                entity1 = ner[y - 1][1]
+                entity1 = ner[y - 1 + dependencyCount][1]
                 property1 = ner[y - 1 + dependencyCount][0]
 
             if z != 0:
-                entity2 = ner[z - 1][1]
+                entity2 = ner[z - 1 + dependencyCount][1]
                 property2 = ner[z - 1 + dependencyCount][0]
 
             # create relation
@@ -360,11 +360,11 @@ if __name__ == "__main__":
 
         elif (x != 'ROOT') and (rootCount > 1):
             if y != 0:
-                entity1 = ner[y - 1][1]
+                entity1 = ner[y - 1 + dependencyRootCount][1]
                 property1 = ner[y - 1 + dependencyRootCount][0]
 
             if z != 0:
-                entity2 = ner[z - 1][1]
+                entity2 = ner[z - 1 + dependencyRootCount][1]
                 property2 = ner[z - 1 + dependencyRootCount][0]
 
             # create relation
