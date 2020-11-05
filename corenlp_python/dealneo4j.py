@@ -273,6 +273,7 @@ if __name__ == "__main__":
     myneo4j = DealNeo4j(url, user, password)
 
     # the sentence
+    # sentence = "Aist is one of departments in National Institute of Advanced Industrial Science amd Technology which is a organization like WTO."
     sentence = "Liu, Li and other people go to aist in Tokyo Japan every weekday, and we come from different countries and areas. \
         aist is one of departments in National Institute of Advanced Industrial Science amd Technology which is a organization like WTO."
     # sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
