@@ -11,10 +11,10 @@ class DealNeo4j:
     def close(self):
         # Don't forget to close the driver connection when you are finished with it
         self.driver.close()
-        
+
     def remove_relations_nodes(self):
         with self.driver.session() as session:
-                session.write_transaction(self._remove_relations_nodes)        
+            session.write_transaction(self._remove_relations_nodes)
 
     def create_relation(self, entity1, entity2, property1_name, property2_name, relation):
         with self.driver.session() as session:
@@ -295,13 +295,27 @@ if __name__ == "__main__":
     dependencyCount = 0
     # the count of dependency root
     dependencyRootCount = 0
-        
+
     # remove all relation and nodes
     myneo4j.remove_relations_nodes()
     print('All the relations and nodes have been removed.')
-    
+
     myDepen = []
-    for x,y,z in dependencies:
+
+    # get the dependencies
+    for x, y, z in dependencies:
+        # properties
+        property1 = ''
+        property2 = ''
+        entity1 = ''
+        entity2 = ''
+        print('-------------------------------------------------------------------------dependency_parse:[0]: ' + x)
+        print(
+            '-------------------------------------------------------------------------dependency_parse:[1]: ' + str(y))
+        print(
+            '-------------------------------------------------------------------------dependency_parse:[2]: ' + str(z))
+        print('-------------------------------------------------------------------------dependencyCount: ' + str(dependencyCount))
+
         if (dependencyCount == 0) and (dependencyRootCount == 0) and (x == 'ROOT'):
             print('Nothing')
         elif (dependencyCount > 0) and (dependencyRootCount == 0) and (x == 'ROOT'):
@@ -313,82 +327,23 @@ if __name__ == "__main__":
         elif (dependencyRootCount > 0) and (x != 'ROOT'):
             y += dependencyCount
             z += dependencyCount
+
+        if y != 0:
+                entity1 = ner[y - 1][1]
+                property1 = ner[y - 1][0]
+
+        if z != 0:
+                entity2 = ner[z - 1][1]
+                property2 = ner[z - 1][0]
+
+        # create relation
+        myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
+
+        # increase dependency
         dependencyCount += 1
-        depen = (x,y,z)
+        depen = (x, y, z)
         myDepen.append(depen)
-        
+
     print(myDepen)
-
-    # get the dependencies
-    # for x, y, z in dependencies:
-    #     # properties
-    #     property1 = ''
-    #     property2 = ''
-    #     entity1 = ''
-    #     entity2 = ''
-    #     print('-------------------------------------------------------------------------dependency_parse:[0]: ' + x)
-    #     print('-------------------------------------------------------------------------dependency_parse:[1]: ' + str(y))
-    #     print('-------------------------------------------------------------------------dependency_parse:[2]: ' + str(z))
-    #     print('-------------------------------------------------------------------------dependencyCount: ' + str(dependencyCount))
-    #     # the first sentence
-    #     if (dependencyCount == 0) and (dependencyRootCount == 0) and (x == 'ROOT'):
-    #         if y != 0:
-    #             entity1 = ner[y - 1][1]
-    #             property1 = ner[y - 1][0]
-
-    #         if z != 0:
-    #             entity2 = ner[z - 1][1]
-    #             property2 = ner[z - 1][0]
-
-    #         # create relation
-    #         myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
-
-    #         # increase the count of root
-    #         rootCount += 1
-
-    #     elif (x != 'ROOT') and (rootCount == 1):
-    #         if y != 0:
-    #             entity1 = ner[y - 1][1]
-    #             property1 = ner[y - 1][0]
-
-    #         if z != 0:
-    #             entity2 = ner[z - 1][1]
-    #             property2 = ner[z - 1][0]
-
-    #         # create relation
-    #         myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
-
-    #     elif (x == 'ROOT') and (rootCount > 0):
-    #         if y != 0:
-    #             entity1 = ner[y - 1 + dependencyCount][1]
-    #             property1 = ner[y - 1 + dependencyCount][0]
-
-    #         if z != 0:
-    #             entity2 = ner[z - 1 + dependencyCount][1]
-    #             property2 = ner[z - 1 + dependencyCount][0]
-
-    #         # create relation
-    #         myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
-
-    #         # decrease dependency count
-    #         dependencyRootCount = dependencyCount
-
-    #     elif (x != 'ROOT') and (rootCount > 1):
-    #         if y != 0:
-    #             entity1 = ner[y - 1 + dependencyRootCount][1]
-    #             property1 = ner[y - 1 + dependencyRootCount][0]
-
-    #         if z != 0:
-    #             entity2 = ner[z - 1 + dependencyRootCount][1]
-    #             property2 = ner[z - 1 + dependencyRootCount][0]
-
-    #         # create relation
-    #         myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
-
-    #     else:
-    #         print(dependencyCount)
-
-    #     # increase dependency count
-    #     dependencyCount += 1
 
     myneo4j.close()
