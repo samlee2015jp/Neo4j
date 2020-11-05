@@ -1,0 +1,16 @@
+ner:  [('Liu', 'PERSON'), (',', 'O'), ('Li', 'PERSON'), ('and', 'O'), ('other', 'O'), ('people', 'O'), ('go', 'O'), ('to', 'O'), ('aist', 'O'), ('in', 'O'), ('Tokyo', 'CITY'), ('Japan', 'COUNTRY'), 
+('every', 'SET'), ('weekday', 'SET'), (',', 'O'), ('and', 'O'),('we', 'O'), ('come', 'O'), ('from', 'O'), ('different', 'O'), ('countries', 'O'), ('and', 'O'), ('areas', 'O'), ('.', 'O'), ('aist', 'O'), 
+('is', 'O'), ('one', 'NUMBER'), ('of', 'O'), ('departments', 'O'), ('in', 'O'), ('National', 'ORGANIZATION'), ('Institute', 'ORGANIZATION'), ('of', 'ORGANIZATION'), ('Advanced', 'ORGANIZATION'), 
+('Industrial', 'ORGANIZATION'), ('Science', 'ORGANIZATION'), ('amd', 'ORGANIZATION'), ('Technology', 'ORGANIZATION'), ('which', 'O'), ('is', 'O'), ('a', 'O'), ('organization', 'O'), ('like', 'O'),
+ ('WTO', 'ORGANIZATION'), ('.', 'O')]
+
+[('ROOT', 0, 7), ('nsubj', 7, 1), ('punct', 1, 2), ('conj', 1, 3), ('cc', 6, 4), ('amod', 6, 5), ('conj', 1, 6), ('case', 9, 8), ('obl', 7, 9), ('case', 12, 10), ('compound', 12, 11), ('obl', 7, 12), 
+('det', 14, 13), ('obl:tmod', 7, 14), ('punct', 7, 15), ('cc', 18, 16), ('nsubj', 18, 17), ('conj', 7, 18), ('case', 21, 19), ('amod', 21, 20), ('obl', 18, 21), ('cc', 23, 22), ('conj', 21, 23), 
+('punct', 7, 24), ('ROOT', 0, 26), ('nsubj',27, 25), ('cop', 28, 27), ('case', 31, 30), ('nmod', 30, 32), ('case', 36, 34), ('compound', 37, 36), ('nmod', 35, 38), ('case', 45, 40), ('compound', 46, 42),
+ ('compound', 47, 44), ('compound', 48, 46), ('compound', 49, 48), ('nmod', 44, 50), ('nsubj', 55, 52), ('cop', 56, 54), ('det', 57, 56), ('dep', 43, 58), ('case', 61, 60), ('nmod', 60, 62), ('punct', 46, 64)]
+
+  ('ROOT', 0, 26), ('nsubj', 26, 24), ('cop', 26, 25), ('case', 28, 27),  ('nmod', 26, 28), ('case', 31, 29), ('compound', 31, 30), ('nmod', 28, 31), ('case', 37, 32), ('compound', 37, 33), ('compound', 37, 34),
+   ('compound', 37, 35), ('compound', 37, 36), ('nmod', 31, 37), ('nsubj', 41, 15), ('cop', 41, 39), ('det', 41, 40), ('dep', 26, 41), ('case', 43, 42), ('nmod', 41, 43), ('punct', 26, 44)
+ 
+ ('ROOT', 0, 3), ('nsubj', 3, 1), ('cop', 3, 2), ('case', 5, 4),  ('nmod', 3, 5), ('case', 8, 6), ('compound', 8, 7), ('nmod', 5, 8), ('case', 14, 9), ('compound', 14, 10), ('compound', 14, 11), 
+ ('compound', 14, 12), ('compound', 14, 13), ('nmod', 8, 14), ('nsubj', 18, 15), ('cop', 18, 16), ('det', 18, 17), ('dep', 3, 18), ('case', 20, 19), ('nmod', 18, 20), ('punct', 3, 21)

@@ -18,14 +18,6 @@ class DealNeo4j:
 
     def create_relation(self, entity1, entity2, property1_name, property2_name, relation):
         with self.driver.session() as session:
-            # entity, property name and relation
-            print("***********************************************************************************************************************************************")
-            print("entity1: ", entity1)
-            print("entity2: ", entity2)
-            print("property1_name: ", property1_name)
-            print("property2_name: ", property2_name)
-            print("relation: ", relation)
-            print("***********************************************************************************************************************************************")
 
             # entity1
             entityResult1 = None
@@ -277,7 +269,7 @@ if __name__ == "__main__":
     # the sentence
     # sentence = "Aist is one of departments in National Institute of Advanced Industrial Science amd Technology which is a organization like WTO."
     sentence = "Liu, Li and other people go to aist in Tokyo Japan every weekday, and we come from different countries and areas. \
-        aist is one of departments in National Institute of Advanced Industrial Science amd Technology which is a organization like WTO."
+        aist is one of departments in National Institute of Advanced Industrial Science and Technology which is a organization like WTO."
     # sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
     # sentence = 'I go to aist in Tokyo everyday.'
     nlp = NLP(sentence)
@@ -295,6 +287,8 @@ if __name__ == "__main__":
     dependencyCount = 0
     # the count of dependency root
     dependencyRootCount = 0
+    # the count of root
+    rootCount = 0
 
     # remove all relation and nodes
     myneo4j.remove_relations_nodes()
@@ -309,24 +303,30 @@ if __name__ == "__main__":
         property2 = ''
         entity1 = ''
         entity2 = ''
+        relation = ''
         print('-------------------------------------------------------------------------dependency_parse:[0]: ' + x)
-        print(
-            '-------------------------------------------------------------------------dependency_parse:[1]: ' + str(y))
-        print(
-            '-------------------------------------------------------------------------dependency_parse:[2]: ' + str(z))
+        print('-------------------------------------------------------------------------dependency_parse:[1]: ' + str(y))
+        print('-------------------------------------------------------------------------dependency_parse:[2]: ' + str(z))
         print('-------------------------------------------------------------------------dependencyCount: ' + str(dependencyCount))
 
-        if (dependencyCount == 0) and (dependencyRootCount == 0) and (x == 'ROOT'):
+        if (dependencyCount == 0) and (rootCount == 0) and (x == 'ROOT'):
             print('Nothing')
-        elif (dependencyCount > 0) and (dependencyRootCount == 0) and (x == 'ROOT'):
-            dependencyRootCount += 1
-            z += dependencyCount
-        elif (dependencyCount > 0) and (dependencyRootCount > 0) and (x == 'ROOT'):
-            dependencyRootCount += 1
-            z += dependencyCount
-        elif (dependencyRootCount > 0) and (x != 'ROOT'):
-            y += dependencyCount
-            z += dependencyCount
+        elif (dependencyCount > 0) and (rootCount == 0) and (x == 'ROOT'):
+            rootCount += 1
+            dependencyRootCount += dependencyCount
+            z += dependencyRootCount
+        elif (dependencyCount > 0) and (rootCount > 0) and (x == 'ROOT'):
+            rootCount += 1
+            dependencyRootCount += dependencyCount
+            z += dependencyRootCount
+        elif (dependencyCount > 0) and  (rootCount > 0) and (x != 'ROOT'):
+            y += dependencyRootCount
+            z += dependencyRootCount
+            
+        print('******************************************************************************************* x: ' + x)
+        print('******************************************************************************************* y: ' + str(y))
+        print('******************************************************************************************* z: ' + str(z))
+        print('-------------------------------------------------------------------------dependencyCount: ' + str(dependencyCount))
 
         if y != 0:
                 entity1 = ner[y - 1][1]
@@ -335,15 +335,21 @@ if __name__ == "__main__":
         if z != 0:
                 entity2 = ner[z - 1][1]
                 property2 = ner[z - 1][0]
+        relation = x.replace(':', '')
+                
+        # entity, property name and relation
+        print("***********************************************************************************************************************************************")
+        print("entity1: ", entity1)
+        print("entity2: ", entity2)
+        print("property1: ", property1)
+        print("property2: ", property2)
+        print("relation: ", relation)
+        print("***********************************************************************************************************************************************")
 
         # create relation
-        myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
+        myneo4j.create_relation(entity1, entity2, property1, property2, relation)
 
         # increase dependency
         dependencyCount += 1
-        depen = (x, y, z)
-        myDepen.append(depen)
-
-    print(myDepen)
 
     myneo4j.close()
