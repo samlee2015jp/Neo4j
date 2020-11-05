@@ -66,15 +66,15 @@ class DealNeo4j:
             relationResult = None
             if ((relation != 'ROOT') and (relation != '')):
                 relationResult = self._find_relation(
-                    self, property1_name, property2_name, relation)
+                    self, entity1, entity2, property1_name, property2_name, relation)
             else:
                 relationResult = ''
             print("relationResult: ", relationResult)
 
             # Write transactions allow the driver to handle retries and transient errors
-            if (propertyResult1 != None) and (propertyResult2 == None) and (relationResult != None):
+            if (entityResult1 != None) and (entityResult2 == None) and (propertyResult1 != None) and (propertyResult2 == None) and (relationResult != None):
                 createPropertyResult2 = session.write_transaction(
-                    self._create_and_return_property, property2_name)
+                    self._create_and_return_entity_property, entity2, property2_name)
                 print('created property2: ' + createPropertyResult2[0])
 
             # creating property2 and relation
@@ -178,7 +178,7 @@ class DealNeo4j:
         return [record["relation"] for record in result]
 
     @staticmethod
-    def _create_and_return_property(tx, property_name):
+    def _create_and_return_entity_property(tx, entity, property_name):
 
         # To learn more about the Cypher syntax.
         # see http://neo4j.com/docs/cypher-manual/current/
@@ -187,17 +187,17 @@ class DealNeo4j:
         # see https://neo4j.com/docs/cypher-refcard/current/
 
         query = (
-            "CREATE (e:Entity {name: $property_name}) "
+            "CREATE (e:" + entity + " {name: $property_name}) "
             "RETURN e.name AS name"
         )
-        result = tx.run(query, property_name=property_name)
+        result = tx.run(query, entity=entity, property_name=property_name)
         return [record["name"] for record in result]
 
     @staticmethod
     def _find_entity(self, entity):
         with self.driver.session() as session:
             result = session.read_transaction(
-                self._find_and_return_entity_property, entity)
+                self._find_and_return_entity, entity)
             for record in result:
                 print("Found entity name: {record}".format(record=record))
                 return record
@@ -205,8 +205,8 @@ class DealNeo4j:
     @staticmethod
     def _find_and_return_entity(tx, entity):
         query = (
-            "MATCH (p:$entity) "
-            "RETURN p.name AS name"
+            "MATCH (e:" + entity + ") "
+            "RETURN e.name AS name"
         )
         result = tx.run(query, entity=entity)
         return [record["name"] for record in result]
@@ -223,30 +223,30 @@ class DealNeo4j:
     @staticmethod
     def _find_and_return_entity_property(tx, entity, property_name):
         query = (
-            "MATCH (p:$entity) "
-            "WHERE p.name = $property_name "
-            "RETURN p.name AS name"
+            "MATCH (e:" + entity + ") "
+            "WHERE e.name = $property_name "
+            "RETURN e.name AS name"
         )
         result = tx.run(query, entity=entity, property_name=property_name)
         return [record["name"] for record in result]
 
     @staticmethod
-    def _find_relation(self, property1_name, property2_name, relation):
+    def _find_relation(self, entity1, entity2, property1_name, property2_name, relation):
         with self.driver.session() as session:
             result = session.read_transaction(
-                self._find_and_return_relation, property1_name=property1_name, property2_name=property2_name, relation=relation)
+                self._find_and_return_relation, entity1=entity1, entity2=entity2, property1_name=property1_name, property2_name=property2_name, relation=relation)
             for record in result:
                 print("Found property name: {record}".format(record=record))
                 return record
 
     @staticmethod
-    def _find_and_return_relation(tx, property1_name, property2_name, relation):
+    def _find_and_return_relation(tx, entity1, entity2, property1_name, property2_name, relation):
         query = (
-            "MATCH (n:Entity{name:$property1_name})-[r:" +
-            relation + "]->(m:Entity{name:$property2_name}) "
+            "MATCH (n:" + entity1 + " {name:$property1_name})-[r:" +
+            relation + "]->(m:" + entity2 + "{name:$property2_name}) "
             "RETURN type(r) AS relation"
         )
-        result = tx.run(query, property1_name=property1_name,
+        result = tx.run(query, entity1=entity1, entity2=entity2, property1_name=property1_name,
                         property2_name=property2_name, relation=relation)
         return [record["relation"] for record in result]
 
