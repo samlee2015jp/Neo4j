@@ -16,18 +16,38 @@ class DealNeo4j:
         # Don't forget to close the driver connection when you are finished with it
         self.driver.close()
 
-    def create_relation(self, property1_name, property2_name, relation):
+    def create_relation(self, entity1, entity2, property1_name, property2_name, relation):
         with self.driver.session() as session:
-            # property name and relation
+            # entity, property name and relation
+            print("entity1: ", entity1)
+            print("entity2: ", entity2)
             print("property1_name: ", property1_name)
             print("property2_name: ", property2_name)
             print("relation: ", relation)
 
+            # entity1
+            entityResult1 = None
+            if entity1 != '':
+                entityResult1 = self._find_entity(
+                    self, entity1)
+            else:
+                entityResult1 = ''
+            print("entityResult1: ", entityResult1)
+
+            # entity2
+            entityResult2 = None
+            if entity2 != '':
+                entityResult2 = self._find_entity(
+                    self, entity2)
+            else:
+                entityResult2 = ''
+            print("entityResult2: ", entityResult2)
+
             # propertyResult1
             propertyResult1 = None
             if property1_name != '':
-                propertyResult1 = self._find_property(
-                    self, property1_name)
+                propertyResult1 = self._find_entity_property(
+                    self, entity1, property1_name)
             else:
                 propertyResult1 = ''
             print("propertyResult1: ", propertyResult1)
@@ -35,8 +55,8 @@ class DealNeo4j:
             # propertyResult2
             propertyResult2 = None
             if property2_name != '':
-                propertyResult2 = self._find_property(
-                    self, property2_name)
+                propertyResult2 = self._find_entity_property(
+                    self, entity2, property2_name)
 
             else:
                 propertyResult2 = ''
@@ -174,22 +194,40 @@ class DealNeo4j:
         return [record["name"] for record in result]
 
     @staticmethod
-    def _find_property(self, property_name):
+    def _find_entity(self, entity):
         with self.driver.session() as session:
             result = session.read_transaction(
-                self._find_and_return_property, property_name)
+                self._find_and_return_entity_property, entity)
             for record in result:
-                print("Found property name: {record}".format(record=record))
+                print("Found entity name: {record}".format(record=record))
                 return record
 
     @staticmethod
-    def _find_and_return_property(tx, property_name):
+    def _find_and_return_entity(tx, entity):
         query = (
-            "MATCH (p:Entity) "
+            "MATCH (p:$entity) "
+            "RETURN p.name AS name"
+        )
+        result = tx.run(query, entity=entity)
+        return [record["name"] for record in result]
+
+    @staticmethod
+    def _find_entity_property(self, entity, property_name):
+        with self.driver.session() as session:
+            result = session.read_transaction(
+                self._find_and_return_entity_property, entity, property_name)
+            for record in result:
+                print("Found entity and property name: {record}".format(record=record))
+                return record
+
+    @staticmethod
+    def _find_and_return_entity_property(tx, entity, property_name):
+        query = (
+            "MATCH (p:$entity) "
             "WHERE p.name = $property_name "
             "RETURN p.name AS name"
         )
-        result = tx.run(query, property_name=property_name)
+        result = tx.run(query, entity=entity, property_name=property_name)
         return [record["name"] for record in result]
 
     @staticmethod
@@ -254,47 +292,61 @@ if __name__ == "__main__":
         # properties
         property1 = ''
         property2 = ''
+        entity1 = ''
+        entity2 = ''
         print(x)
         print(dependencyCount)
         # the first sentence
         if (x == 'ROOT') and (rootCount == 0):
             if y != 0:
+                entity1 = ner[y-1][1]
                 property1 = ner[y-1][0]
+                print(entity1)
                 print(property1)
 
             if z != 0:
+                entity2 = ner[z-1][1]
                 property2 = ner[z-1][0]
+                print(entity2)
                 print(property2)
 
             # create relation
-            myneo4j.create_relation(property1, property2, x.replace(':', ''))
+            myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
 
             # increase the count of root
             rootCount += 1
 
         elif (x != 'ROOT') and (rootCount == 1):
             if y != 0:
+                entity1 = ner[y-1][1]
                 property1 = ner[y-1][0]
+                print(entity1)
                 print(property1)
 
             if z != 0:
+                entity2 = ner[z-1][1]
                 property2 = ner[z-1][0]
+                print(entity2)
                 print(property2)
 
             # create relation
-            myneo4j.create_relation(property1, property2, x.replace(':', ''))
+            myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
 
         elif (x == 'ROOT') and (rootCount > 0):
             if y != 0:
+                entity1 = ner[y-1][1]
                 property1 = ner[y-1+dependencyCount][0]
+                print(entity1)
                 print(property1)
 
             if z != 0:
+                entity2 = ner[z-1][1]
                 property2 = ner[z-1+dependencyCount][0]
+                print(entity2)
                 print(property2)
 
             # create relation
-            myneo4j.create_relation(property1, property2, x.replace(':', ''))
+            myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
 
             # increase the count of root
             rootCount += 1
@@ -303,15 +355,19 @@ if __name__ == "__main__":
 
         elif (x != 'ROOT') and (rootCount > 1):
             if y != 0:
+                entity1 = ner[y-1][1]
                 property1 = ner[y-1+dependencyRootCount][0]
+                print(entity1)
                 print(property1)
 
             if z != 0:
+                entity2 = ner[z-1][1]
                 property2 = ner[z-1+dependencyRootCount][0]
+                print(entity2)
                 print(property2)
 
             # create relation
-            myneo4j.create_relation(property1, property2, x.replace(':', ''))
+            myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
 
         else:
             print(dependencyCount)
