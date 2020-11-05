@@ -77,35 +77,35 @@ class DealNeo4j:
             elif (propertyResult1 != None) and (propertyResult2 == None) and (relationResult == None):
                 createrRelationPropertyResult2 = session.write_transaction(
                     self._create_and_return_relation_property2, entity1, entity2, property1_name, property2_name, relation)
-                print('created property2 and relation: ' +
+                print('created property2 and relation: ' + 
                       createrRelationPropertyResult2[0])
 
             # creating property1 and relation
             elif (propertyResult1 == None) and (propertyResult2 != None) and (relationResult == None):
                 createrRelationPropertyResult1 = session.write_transaction(
                     self._create_and_return_relation_property1, entity1, entity2, property1_name, property2_name, relation)
-                print('created property1 and relation: ' +
+                print('created property1 and relation: ' + 
                       createrRelationPropertyResult1[0])
 
             # creating property1, property2 and relation
             elif (propertyResult1 == None) and (propertyResult2 == None) and (relationResult == None):
                 createrRelationPropertyResult12 = session.write_transaction(
                     self._create_and_return_relation_properties, entity1, entity2, property1_name, property2_name, relation)
-                print('created property1, property2 and relation: ' +
+                print('created property1, property2 and relation: ' + 
                       createrRelationPropertyResult12[0])
 
             # creating relation
             elif (propertyResult1 != None) and (propertyResult2 != None) and (relationResult == None):
                 createrRelationResult = session.write_transaction(
                     self._create_and_return_relation, entity1, entity2, property1_name, property2_name, relation)
-                print('created relation: ' +
+                print('created relation: ' + 
                       createrRelationResult[0])
 
             # creating relation
             elif (propertyResult1 != None) and (propertyResult2 != None) and (relationResult != None) and (propertyResult1 != '') and (propertyResult2 != '') and (relationResult != ''):
                 createrRelationPropertyResult = session.write_transaction(
                     self._set_and_return_relation_property, entity1, entity2, property1_name, property2_name, relation)
-                print('set size property of relation: ' +
+                print('set size property of relation: ' + 
                       str(createrRelationPropertyResult[0]))
 
             # doing nothing
@@ -118,7 +118,7 @@ class DealNeo4j:
     @staticmethod
     def _set_and_return_relation_property(tx, entity1, entity2, property1_name, property2_name, relation):
         query = (
-            "MATCH(n: " + entity1 + "{name: $property1_name})-[r: " +
+            "MATCH(n: " + entity1 + "{name: $property1_name})-[r: " + 
             relation + "] -> (m: " + entity2 + "{name: $property2_name} )"
             "SET r.size=CASE WHEN r.size IS NULL THEN 2 ELSE r.size + 1 END "
             "RETURN r.size AS size"
@@ -141,7 +141,7 @@ class DealNeo4j:
     @staticmethod
     def _create_and_return_relation_properties(tx, entity1, entity2, property1_name, property2_name, relation):
         query = (
-            "CREATE (n: " + entity1 + "{name: $property1_name})-[r:" + relation +
+            "CREATE (n: " + entity1 + "{name: $property1_name})-[r:" + relation + 
             "] -> (m: " + entity2 + "{name: $property2_name}) "
             "RETURN type(r) AS relation"
         )
@@ -153,7 +153,7 @@ class DealNeo4j:
     def _create_and_return_relation_property1(tx, entity1, entity2, property1_name, property2_name, relation):
         query = (
             "MATCH (m: " + entity2 + "{name: $property2_name}) "
-            "CREATE (n: " + entity1 + "{name: $property1_name})-[r:" + relation +
+            "CREATE (n: " + entity1 + "{name: $property1_name})-[r:" + relation + 
             "] -> (m) "
             "RETURN type(r) AS relation"
         )
@@ -165,7 +165,7 @@ class DealNeo4j:
     def _create_and_return_relation_property2(tx, entity1, entity2, property1_name, property2_name, relation):
         query = (
             "MATCH (n: " + entity1 + "{name: $property1_name}) "
-            "CREATE (n)-[r:" + relation +
+            "CREATE (n)-[r:" + relation + 
             "] -> (m: " + entity2 + "{name: $property2_name}) "
             "RETURN type(r) AS relation"
         )
@@ -238,7 +238,7 @@ class DealNeo4j:
     @staticmethod
     def _find_and_return_relation(tx, entity1, entity2, property1_name, property2_name, relation):
         query = (
-            "MATCH (n: " + entity1 + " {name:$property1_name})-[r:" +
+            "MATCH (n: " + entity1 + " {name:$property1_name})-[r:" + 
             relation + "]->(m:" + entity2 + "{name:$property2_name}) "
             "RETURN type(r) AS relation"
         )
@@ -261,7 +261,7 @@ if __name__ == "__main__":
 
     # the sentence
     sentence = "Liu, Li and other people go to aist in Tokyo Japan every weekday, and we come from different countries and areas. \
-        aist is one of departments in National Institute of Advanced Industrial Science amd Technology which is a ognazation like WTO."
+        aist is one of departments in National Institute of Advanced Industrial Science amd Technology which is a organization like WTO."
     # sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
     # sentence = 'I go to aist in Tokyo everyday.'
     nlp = NLP(sentence)
@@ -298,12 +298,12 @@ if __name__ == "__main__":
         # the first sentence
         if (x == 'ROOT') and (rootCount == 0):
             if y != 0:
-                entity1 = ner[y-1][1]
-                property1 = ner[y-1][0]
+                entity1 = ner[y - 1][1]
+                property1 = ner[y - 1][0]
 
             if z != 0:
-                entity2 = ner[z-1][1]
-                property2 = ner[z-1][0]
+                entity2 = ner[z - 1][1]
+                property2 = ner[z - 1][0]
 
             # create relation
             myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
@@ -313,24 +313,24 @@ if __name__ == "__main__":
 
         elif (x != 'ROOT') and (rootCount == 1):
             if y != 0:
-                entity1 = ner[y-1][1]
-                property1 = ner[y-1][0]
+                entity1 = ner[y - 1][1]
+                property1 = ner[y - 1][0]
 
             if z != 0:
-                entity2 = ner[z-1][1]
-                property2 = ner[z-1][0]
+                entity2 = ner[z - 1][1]
+                property2 = ner[z - 1][0]
 
             # create relation
             myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
 
         elif (x == 'ROOT') and (rootCount > 0):
             if y != 0:
-                entity1 = ner[y-1][1]
-                property1 = ner[y-1+dependencyCount][0]
+                entity1 = ner[y - 1][1]
+                property1 = ner[y - 1 + dependencyCount][0]
 
             if z != 0:
-                entity2 = ner[z-1][1]
-                property2 = ner[z-1+dependencyCount][0]
+                entity2 = ner[z - 1][1]
+                property2 = ner[z - 1 + dependencyCount][0]
 
             # create relation
             myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
@@ -342,12 +342,12 @@ if __name__ == "__main__":
 
         elif (x != 'ROOT') and (rootCount > 1):
             if y != 0:
-                entity1 = ner[y-1][1]
-                property1 = ner[y-1+dependencyRootCount][0]
+                entity1 = ner[y - 1][1]
+                property1 = ner[y - 1 + dependencyRootCount][0]
 
             if z != 0:
-                entity2 = ner[z-1][1]
-                property2 = ner[z-1+dependencyRootCount][0]
+                entity2 = ner[z - 1][1]
+                property2 = ner[z - 1 + dependencyRootCount][0]
 
             # create relation
             myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
