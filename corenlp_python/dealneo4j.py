@@ -11,6 +11,10 @@ class DealNeo4j:
     def close(self):
         # Don't forget to close the driver connection when you are finished with it
         self.driver.close()
+        
+    def remove_relations_nodes(self):
+        with self.driver.session() as session:
+                session.write_transaction(self._remove_relations_nodes)        
 
     def create_relation(self, entity1, entity2, property1_name, property2_name, relation):
         with self.driver.session() as session:
@@ -174,6 +178,15 @@ class DealNeo4j:
         return [record["relation"] for record in result]
 
     @staticmethod
+    def _remove_relations_nodes(tx):
+
+        query = (
+            "MATCH (n)-[r]->(m) DELETE r,n,m "
+        )
+        result = tx.run(query)
+        return result
+
+    @staticmethod
     def _create_and_return_entity_property(tx, entity, property_name):
 
         # To learn more about the Cypher syntax.
@@ -283,6 +296,10 @@ if __name__ == "__main__":
 
     # the count of dependency root
     dependencyRootCount = 0
+        
+    # remove all relation and nodes
+    myneo4j.remove_relations_nodes()
+    print('All the relations and nodes have been removed.')
 
     # get the dependencies
     for x, y, z in dependencies:
