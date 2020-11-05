@@ -1,10 +1,6 @@
 from nlp import NLP
 
-import logging
-
 from neo4j import GraphDatabase
-from neo4j.exceptions import ServiceUnavailable
-from neo4j.work import result
 
 
 class DealNeo4j:
@@ -206,7 +202,7 @@ class DealNeo4j:
     def _find_and_return_entity(tx, entity):
         query = (
             "MATCH (e:" + entity + ") "
-            "RETURN e.name AS name"
+            "RETURN e AS name"
         )
         result = tx.run(query, entity=entity)
         return [record["name"] for record in result]
@@ -294,21 +290,19 @@ if __name__ == "__main__":
         property2 = ''
         entity1 = ''
         entity2 = ''
-        print(x)
-        print(dependencyCount)
+        print('-------------------------------------------------------------------------dependency_parse:[0]: ' + x)
+        print('-------------------------------------------------------------------------dependency_parse:[1]: ' + str(y))
+        print('-------------------------------------------------------------------------dependency_parse:[2]: ' + str(z))
+        print('-------------------------------------------------------------------------dependencyCount: ' + str(dependencyCount))
         # the first sentence
         if (x == 'ROOT') and (rootCount == 0):
             if y != 0:
                 entity1 = ner[y-1][1]
                 property1 = ner[y-1][0]
-                print(entity1)
-                print(property1)
 
             if z != 0:
                 entity2 = ner[z-1][1]
                 property2 = ner[z-1][0]
-                print(entity2)
-                print(property2)
 
             # create relation
             myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
@@ -320,14 +314,10 @@ if __name__ == "__main__":
             if y != 0:
                 entity1 = ner[y-1][1]
                 property1 = ner[y-1][0]
-                print(entity1)
-                print(property1)
 
             if z != 0:
                 entity2 = ner[z-1][1]
                 property2 = ner[z-1][0]
-                print(entity2)
-                print(property2)
 
             # create relation
             myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
@@ -336,14 +326,10 @@ if __name__ == "__main__":
             if y != 0:
                 entity1 = ner[y-1][1]
                 property1 = ner[y-1+dependencyCount][0]
-                print(entity1)
-                print(property1)
 
             if z != 0:
                 entity2 = ner[z-1][1]
                 property2 = ner[z-1+dependencyCount][0]
-                print(entity2)
-                print(property2)
 
             # create relation
             myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
@@ -357,14 +343,10 @@ if __name__ == "__main__":
             if y != 0:
                 entity1 = ner[y-1][1]
                 property1 = ner[y-1+dependencyRootCount][0]
-                print(entity1)
-                print(property1)
 
             if z != 0:
                 entity2 = ner[z-1][1]
                 property2 = ner[z-1+dependencyRootCount][0]
-                print(entity2)
-                print(property2)
 
             # create relation
             myneo4j.create_relation(entity1, entity2, property1, property2, x.replace(':', ''))
