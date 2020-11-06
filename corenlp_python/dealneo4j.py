@@ -269,7 +269,8 @@ if __name__ == "__main__":
     # the sentence
     # sentence = "Aist is one of departments in National Institute of Advanced Industrial Science amd Technology which is a organization like WTO."
     sentence = "Liu, Li who comes from Changsha and other people go to aist in Tokyo Japan every weekday since Oct 15th 2020, and we come from different countries and areas. \
-        aist is one of departments in National Institute of Advanced Industrial Science and Technology which is a organization like WTO. Li who comes from Changsha Hunan province is Chinese Engineer."
+        Aist is one of departments in National Institute of Advanced Industrial Science and Technology which is a organization like WTO. Li who comes from\
+        Changsha Hunan province is Chinese Engineer. My Github address is https://github.com/samlee2015jp."
     # sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
     # sentence = 'I go to aist in Tokyo everyday.'
     nlp = NLP(sentence)
