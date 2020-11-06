@@ -1,4 +1,4 @@
 import torch
 
-x = torch.rand(5,3)
+x = torch.rand(10, 6)
 print(x)
