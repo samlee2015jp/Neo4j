@@ -1,11 +1,18 @@
 from stanfordcorenlp import StanfordCoreNLP
-
+import platform
 
 class NLP:
 
     def __init__(self, sentence):
-        self.nlp = StanfordCoreNLP(
-            r'D:\samli_202010\CoreNLP\CoreNLP\stanford-corenlp-4.1.0')
+        # stanford-corenlp path
+        file_path = ''
+        if platform.system() == 'Windows':
+         file_path = r'D:\samli_202010\CoreNLP\CoreNLP\stanford-corenlp-4.1.0'
+        elif platform.system() == 'Darwin':
+         file_path = r'/Users/Sam/demo/neo4j/stanford-corenlp-4.1.0'
+        else:
+            print('This system is Linux.')
+        self.nlp = StanfordCoreNLP(file_path)
         self.sentence = sentence
 
     def close(self):
