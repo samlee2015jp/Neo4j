@@ -33,7 +33,7 @@ class ClassificationTsvReader(DatasetReader):
 
 dataset_reader = ClassificationTsvReader(max_tokens=64)
 instances = dataset_reader.read(
-    r"D:\samli_202010\task\Neo4j\allennlp\data\cv000_29416.txt")
+    r"D:\samli_202010\task\Neo4j\allennlp\data\movie_review\dev.tsv")
 
 for instance in instances[:10]:
     print(instance)
