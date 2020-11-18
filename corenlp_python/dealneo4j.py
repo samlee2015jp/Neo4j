@@ -6,8 +6,17 @@ from neo4j import GraphDatabase
 
 class DealNeo4j:
 
-    def __init__(self, uri, user, password):
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+    def __init__(self):
+        # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
+
+        scheme = "bolt"  # connecting to Aura. use the "neo4j+s" URI scheme
+        host_name = "localhost"
+        port = 7687
+        url = "{scheme}://{host_name}:{port}".format(
+            scheme=scheme, host_name=host_name, port=port)
+        user = "neo4j"
+        password = "password"
+        self.driver = GraphDatabase.driver(url, auth=(user, password))
         # stanford-corenlp path
         file_path = ''
         if platform.system() == 'Windows':
@@ -268,16 +277,7 @@ class DealNeo4j:
 
 
 if __name__ == "__main__":
-    # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
-
-    scheme = "bolt"  # connecting to Aura. use the "neo4j+s" URI scheme
-    host_name = "localhost"
-    port = 7687
-    url = "{scheme}://{host_name}:{port}".format(
-        scheme=scheme, host_name=host_name, port=port)
-    user = "neo4j"
-    password = "password"
-    myneo4j = DealNeo4j(url, user, password)
+    myneo4j = DealNeo4j()
 
     # the sentence
     # sentence = "Aist is one of departments in National Institute of Advanced Industrial Science amd Technology which is a organization like WTO."
@@ -312,15 +312,15 @@ if __name__ == "__main__":
 # Don't be sentimental here. If you haven't used it in the last six months there is little chance you'll use it in the next six months. Toss it."
     # sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
     sentence = 'Joe is living in Los Angeles.'
-    print("ner: ", nlp.get_ner())
-    # print("tokenize: ", nlp.get_tokenize())
-    # print("annotate: ", nlp.get_annotate())
-    # print("pos_tag: ", nlp.get_pos_tag())
-    # print("sentence: ", nlp.sentence)
-    # print("parse: ", nlp.get_parse())
-    print("dependency_parse: ", nlp.get_dependency_parse())
-    ner = nlp.get_ner()
-    dependencies = nlp.get_dependency_parse()
+    print("ner: ", myneo4j.nlp.ner())
+    # print("tokenize: ", myneo4j.nlp.tokenize())
+    # print("annotate: ", myneo4j.nlp.annotate())
+    # print("pos_tag: ", myneo4j.nlp.pos_tag())
+    # print("sentence: ", myneo4j.nlp.sentence)
+    # print("parse: ", myneo4j.nlp.parse())
+    print("dependency_parse: ", myneo4j.nlp.dependency_parse())
+    ner = myneo4j.nlp.ner()
+    dependencies = myneo4j.nlp.dependency_parse()
 
     # the count of dependency
     dependencyCount = 0
