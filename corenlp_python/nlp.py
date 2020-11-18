@@ -16,7 +16,7 @@ class NLP:
         self.sentence = sentence
 
     def close(self):
-        self.mynlp.close
+        self.nlp.close
 
     def get_tokenize(self):
         # Tokenize
