@@ -20,9 +20,9 @@ class DealNeo4j:
         # stanford-corenlp path
         file_path = ''
         if platform.system() == 'Windows':
-         file_path = r'D:\samli_202010\CoreNLP\CoreNLP\stanford-corenlp-4.1.0'
+            file_path = r'D:\samli_202010\CoreNLP\CoreNLP\stanford-corenlp-4.1.0'
         elif platform.system() == 'Darwin':
-         file_path = r'/Users/Sam/demo/neo4j/stanford-corenlp-4.1.0'
+            file_path = r'/Users/Sam/demo/neo4j/stanford-corenlp-4.1.0'
         else:
             print('This system is Linux.')
         self.nlp = StanfordCoreNLP(file_path)
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     # sentence = "Liu, Li who comes from Changsha and other people go to aist in Tokyo Japan every weekday since Oct 15th 2020, and we come from different countries and areas. \
     #     Aist is one of departments in National Institute of Advanced Industrial Science and Technology which is a organization like WTO. Li who comes from\
     #     Changsha Hunan province is Chinese Engineer. My Github address is https://github.com/samlee2015jp."
-        
+
 #     sentence = "If you're a photographer, keep all the necessary lens, cords, and batteries in the same quadrant of your home or studio. Paints should be kept with brushes, cleaner, and canvas, print supplies should be by the ink, etc. Make broader groups and areas for your supplies to make finding them easier, limiting your search to a much smaller area. Some ideas include:\
 # \
 # \
