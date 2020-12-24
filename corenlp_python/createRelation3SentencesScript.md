@@ -1,3 +1,5 @@
+sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
+
 //createentity1
 create (n1:entity1{name:'I'})-[r1:next]->(n2:entity1{name:'go'})-[r2:next]->(n3:entity1{name:'to'})-[r3:next]->(n4:entity1{name:'AIST'})-[r4:next]->(n5:entity1{name:'in'})-[r5:next]->(n6:entity1{name:'Tokyo'})-[r6:next]->(n7:entity1{name:'everyday'})-[r7:next]->(n8:entity1{name:'.'})
 
