@@ -315,11 +315,12 @@ if __name__ == "__main__":
     print("ner: ", myneo4j.nlp.ner(sentence))
     # print("tokenize: ", myneo4j.nlp.tokenize(sentence))
     # print("annotate: ", myneo4j.nlp.annotate(sentence))
-    # print("pos_tag: ", myneo4j.nlp.pos_tag(sentence))
+    print("pos_tag: ", myneo4j.nlp.pos_tag(sentence))
     # print("sentence: ", myneo4j.nlp.sentence(sentence))
     # print("parse: ", myneo4j.nlp.parse((sentence)))
     print("dependency_parse: ", myneo4j.nlp.dependency_parse(sentence))
     ner = myneo4j.nlp.ner(sentence)
+    pos = myneo4j.nlp.pos_tag(sentence)
     dependencies = myneo4j.nlp.dependency_parse(sentence)
 
     # the count of dependency
