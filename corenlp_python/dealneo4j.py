@@ -310,7 +310,7 @@ if __name__ == "__main__":
 # \
 # \
 # Don't be sentimental here. If you haven't used it in the last six months there is little chance you'll use it in the next six months. Toss it."
-    sentence = 'I go to aist in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
+    sentence = 'I go to AIST in Tokyo everyday. I go to school every weekday. Everyone plays game at home, where I donot play.'
     # sentence = 'Joe is living in Los Angeles.'
     print("ner: ", myneo4j.nlp.ner(sentence))
     # print("tokenize: ", myneo4j.nlp.tokenize(sentence))
